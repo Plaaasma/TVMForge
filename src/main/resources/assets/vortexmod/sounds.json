@@ -1,0 +1,20 @@
+{
+  "throttle_sound": {
+    "subtitle": "sounds.vortexmod.throttle_sound",
+    "sounds": [
+      "vortexmod:throttle_sound"
+    ]
+  },
+  "coordpanel_switch": {
+    "subtitle": "sounds.vortexmod.coordpanel_switch",
+    "sounds": [
+      "vortexmod:coordpanel_switch"
+    ]
+  },
+  "coordpanel_button": {
+    "subtitle": "sounds.vortexmod.coordpanel_button",
+    "sounds": [
+      "vortexmod:coordpanel_button"
+    ]
+  }
+}
