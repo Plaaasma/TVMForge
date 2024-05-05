@@ -179,7 +179,6 @@ public class TardisCoreBlockEntity extends BlockEntity {
                     else {
                         ForceManager.doVerticleForceToTarget(this.forceApplier, this, this.targetPos.getX(), -57, this.targetPos.getZ());
                     }
-                    // if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) < 0.1 && shipVelocity2d <= 0.001 && Math.abs(this.serverShip.getVelocity().y()) < 1) {
                     if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) < 20) {
                         TeleportManager.teleportShipWithDimChange(this, server.overworld(), this.targetPos.getX(), this.targetPos.getY(), this.targetPos.getZ(), false, disassemble(), shipPos);
                     }
