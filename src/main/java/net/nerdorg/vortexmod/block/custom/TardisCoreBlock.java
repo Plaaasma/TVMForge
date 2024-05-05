@@ -1,10 +1,12 @@
 package net.nerdorg.vortexmod.block.custom;
 
+import kotlin.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,8 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -28,7 +32,11 @@ import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.nerdorg.vortexmod.VortexMod;
@@ -38,10 +46,10 @@ import net.nerdorg.vortexmod.block.entity.TardisCoreBlockEntity;
 import net.nerdorg.vortexmod.contraption.ModForceApplier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaterniondc;
-import org.joml.Vector3dc;
-import org.joml.Vector3i;
-import org.joml.Vector3ic;
+import org.joml.*;
+import org.joml.primitives.AABBdc;
+import org.joml.primitives.AABBi;
+import org.joml.primitives.AABBic;
 import org.valkyrienskies.core.api.ships.ServerShip;
 import org.valkyrienskies.core.api.ships.properties.ShipTransform;
 import org.valkyrienskies.core.api.world.LevelYRange;
@@ -49,13 +57,17 @@ import org.valkyrienskies.core.api.world.ShipWorld;
 import org.valkyrienskies.core.apigame.ShipTeleportData;
 import org.valkyrienskies.core.apigame.world.properties.DimensionIdKt;
 import org.valkyrienskies.core.impl.game.ShipTeleportDataImpl;
+import org.valkyrienskies.core.impl.shadow.B;
 import org.valkyrienskies.core.util.datastructures.DenseBlockPosSet;
 import org.valkyrienskies.mod.common.BlockStateInfo;
 import org.valkyrienskies.mod.common.assembly.ShipAssemblyKt;
 import org.valkyrienskies.mod.common.item.ShipAssemblerItem;
 import org.valkyrienskies.mod.common.util.DimensionIdProvider;
 
+import java.util.HashMap;
 import java.util.List;
+
+import static org.valkyrienskies.mod.common.assembly.ShipAssemblyKt.createNewShipWithBlocks;
 
 public class TardisCoreBlock extends FaceAttachedHorizontalDirectionalBlockEntity {
     protected static final VoxelShape NORTH_AABB = Block.box(0, 0, 0, 16, 16, 16);
@@ -146,7 +158,10 @@ public class TardisCoreBlock extends FaceAttachedHorizontalDirectionalBlockEntit
 
             if (tardisCoreBlockEntity != null) {
                 if (tardisCoreBlockEntity.getServerShip() == null) {
-                    assemble(serverLevel, pPos);
+                    tardisCoreBlockEntity.assemble(serverLevel);
+                }
+                else {
+                    tardisCoreBlockEntity.disassemble();
                 }
             }
         }
@@ -154,25 +169,6 @@ public class TardisCoreBlock extends FaceAttachedHorizontalDirectionalBlockEntit
         return InteractionResult.PASS;
     }
 
-    private void assemble(ServerLevel level, BlockPos corePos) {
-        DenseBlockPosSet denseBlockPosSet = new DenseBlockPosSet();
-
-        for (int x = -2; x < 3; x++) {
-            for (int y = -1; y < 4; y++) {
-                for (int z = -2; z < 3; z++) {
-                    BlockPos offsetPos = corePos.offset(x, y, z);
-                    denseBlockPosSet.add(offsetPos.getX(), offsetPos.getY(), offsetPos.getZ());
-                }
-            }
-        }
-
-        ServerShip serverShip = ShipAssemblyKt.createNewShipWithBlocks(corePos,
-                denseBlockPosSet,
-                level);
-
-        serverShip.setStatic(false);
-        serverShip.saveAttachment(ModForceApplier.class, new ModForceApplier());
-    }
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {

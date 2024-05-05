@@ -3,8 +3,8 @@
   "block.vortexmod.tardis_designator": "TARDIS Coordinate Designator",
   "block.vortexmod.tardis_core": "TARDIS Core",
 
-  "tooltip.vortexmod.tardis_throttle.tooltip": "Starts/Stops the flight sequence when right clicked.",
-  "tooltip.vortexmod.tardis_designator.tooltip": "Used to set the destination coordinates for your TARDIS.",
+  "tooltip.vortexmod.throttle_block.tooltip": "Starts/Stops the flight sequence when right clicked.",
+  "tooltip.vortexmod.coordinate_block.tooltip": "Used to set the destination coordinates for your TARDIS.",
   "tooltip.vortexmod.tardis_core.tooltip": "The heart of the TARDIS.",
 
   "creativetab.vortex_main_tab": "The Time Vortex"
