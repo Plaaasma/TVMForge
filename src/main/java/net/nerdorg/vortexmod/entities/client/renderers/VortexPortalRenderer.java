@@ -27,6 +27,6 @@ public class VortexPortalRenderer extends MobRenderer<VortexPortalEntity, Vortex
 
     @Override
     public ResourceLocation getTextureLocation(VortexPortalEntity pEntity) {
-        return new ResourceLocation(VortexMod.MODID, "textures/entity/random_texture.png");
+        return new ResourceLocation(VortexMod.MODID, "textures/entity/invisible.png");
     }
 }

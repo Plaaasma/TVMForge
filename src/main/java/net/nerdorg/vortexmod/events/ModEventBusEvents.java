@@ -10,6 +10,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.nerdorg.vortexmod.VortexMod;
 import net.nerdorg.vortexmod.entities.ModEntities;
+import net.nerdorg.vortexmod.entities.custom.DematEffectEntity;
+import net.nerdorg.vortexmod.entities.custom.RematEffectEntity;
 import net.nerdorg.vortexmod.entities.custom.VortexPortalEntity;
 
 @Mod.EventBusSubscriber(modid = VortexMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -18,5 +20,7 @@ public class ModEventBusEvents {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.VORTEX_PORTAL.get(), VortexPortalEntity.createAttributes().build());
+        event.put(ModEntities.DEMAT_ENTITY.get(), DematEffectEntity.createAttributes().build());
+        event.put(ModEntities.REMAT_ENTITY.get(), RematEffectEntity.createAttributes().build());
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +25,8 @@ import net.nerdorg.vortexmod.VortexMod;
 import net.nerdorg.vortexmod.block.ModBlockEntities;
 import net.nerdorg.vortexmod.contraption.ModForceApplier;
 import net.nerdorg.vortexmod.contraption.Stabilize;
+import net.nerdorg.vortexmod.entities.ModEntities;
+import net.nerdorg.vortexmod.entities.custom.DematEffectEntity;
 import net.nerdorg.vortexmod.util.AABBUtil;
 import net.nerdorg.vortexmod.util.CoreUtil;
 import net.nerdorg.vortexmod.util.ForceManager;
@@ -64,6 +67,7 @@ public class TardisCoreBlockEntity extends BlockEntity {
     private ModForceApplier forceApplier;
     private boolean moveToTarget;
     private int time;
+    private int moveTime = 0;
 
     public TardisCoreBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(ModBlockEntities.TARDIS_CORE_BE.get(), pPos, pBlockState);
@@ -140,6 +144,7 @@ public class TardisCoreBlockEntity extends BlockEntity {
         }
 
         MinecraftServer server = this.level.getServer();
+        ServerLevel serverLevel = (ServerLevel) pLevel;
 
         if (this.serverShip == null || this.forceApplier == null) {
             updateShipReference((ServerLevel) pLevel, pPos);
@@ -156,16 +161,25 @@ public class TardisCoreBlockEntity extends BlockEntity {
                 double shipVelocity2d = Math.sqrt(this.serverShip.getVelocity().x() * this.serverShip.getVelocity().x() + this.serverShip.getVelocity().z() * this.serverShip.getVelocity().z());
 
                 if (this.level.dimensionTypeId() != ModDimensions.vortex_DIM_TYPE) {
-                    if (this.time > 30) {
-                        this.serverShip.setStatic(false);
-                        givePassengersGravity();
-                        ForceManager.forceTowardsTarget(this.forceApplier, this);
+                    if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) > 50) {
+                        if (this.moveTime > 60) {
+                            TeleportManager.teleportShipWithDimChange(this, server.getLevel(ModDimensions.vortexDIM_LEVEL_KEY), shipPos.x(), -57, shipPos.z(), true, disassemble(), shipPos);
+                        }
+                        else {
+                            if (this.moveTime == 0) {
+                                ModEntities.DEMAT_ENTITY.get().spawn(serverLevel, new BlockPos((int) shipPos.x(), (int) shipPos.y(), (int) shipPos.z()), MobSpawnType.NATURAL);
+                            }
+                        }
                     }
                     else {
-                        ForceManager.doVerticleForceToTarget(this.forceApplier, this);
-                    }
-                    if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) > 50) {
-                        TeleportManager.teleportShipWithDimChange(this, server.getLevel(ModDimensions.vortexDIM_LEVEL_KEY), shipPos.x(), -57, shipPos.z(), true, disassemble(), shipPos);
+                        if (this.time > 30) {
+                            this.serverShip.setStatic(false);
+                            givePassengersGravity();
+                            ForceManager.forceTowardsTarget(this.forceApplier, this);
+                        }
+                        else {
+                            ForceManager.doVerticleForceToTarget(this.forceApplier, this);
+                        }
                     }
                 }
                 else {
@@ -179,12 +193,14 @@ public class TardisCoreBlockEntity extends BlockEntity {
                     else {
                         ForceManager.doVerticleForceToTarget(this.forceApplier, this, this.targetPos.getX(), -57, this.targetPos.getZ());
                     }
-                    if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) < 20) {
+                    if (shipPos.distance(this.targetPos.getX(), shipPos.y(), this.targetPos.getZ()) < 20 && shipPos.y() % 1 < 0.1) {
                         TeleportManager.teleportShipWithDimChange(this, server.overworld(), this.targetPos.getX(), this.targetPos.getY(), this.targetPos.getZ(), false, disassemble(), shipPos);
                     }
                 }
+                this.moveTime++;
             }
             else {
+                this.moveTime = 0;
                 this.serverShip.setStatic(false);
             }
         }

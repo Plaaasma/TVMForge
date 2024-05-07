@@ -1,22 +1,20 @@
 package net.nerdorg.vortexmod.entities.custom;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import org.joml.Random;
-import org.joml.Vector3f;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class VortexPortalEntity extends Mob {
-    public VortexPortalEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
+public class DematEffectEntity extends Mob {
+    public DematEffectEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -57,11 +55,6 @@ public class VortexPortalEntity extends Mob {
 
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-        return false;
-    }
-
-    @Override
-    public boolean attackable() {
         return false;
     }
 
@@ -109,7 +102,32 @@ public class VortexPortalEntity extends Mob {
     }
 
     @Override
+    public boolean attackable() {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getDeathSound() {
+        return SoundEvents.WARDEN_SONIC_BOOM;
+    }
+
+    @Override
+    public void remove(RemovalReason pReason) {
+        super.remove(pReason);
+    }
+
+    @Override
     public void tick() {
+        if (this.tickCount > 80) {
+            this.kill();
+            this.teleportTo(0, -500, 0);
+        }
+
+        Vec3 preTickPos = this.position();
+
         super.tick();
+
+        this.teleportTo(preTickPos.x(), preTickPos.y(), preTickPos.z());
     }
 }

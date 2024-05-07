@@ -6,6 +6,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.nerdorg.vortexmod.VortexMod;
 import net.nerdorg.vortexmod.entities.client.ModModelLayers;
+import net.nerdorg.vortexmod.entities.client.models.DematEffectModel;
+import net.nerdorg.vortexmod.entities.client.models.RematEffectModel;
 import net.nerdorg.vortexmod.entities.client.models.VortexPortalModel;
 import net.nerdorg.vortexmod.entities.custom.VortexPortalEntity;
 
@@ -15,6 +17,8 @@ public class ModEventBusClientEvents {
     @SubscribeEvent
     public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(ModModelLayers.VORTEX_PORTAL_LAYER, VortexPortalModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.DEMAT_EFFECT_LAYER, DematEffectModel::createBodyLayer);
+        event.registerLayerDefinition(ModModelLayers.REMAT_EFFECT_LAYER, RematEffectModel::createBodyLayer);
     }
 
 //    @SubscribeEvent

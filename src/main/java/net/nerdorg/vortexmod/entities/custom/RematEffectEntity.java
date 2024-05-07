@@ -1,22 +1,15 @@
 package net.nerdorg.vortexmod.entities.custom;
 
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import org.joml.Random;
-import org.joml.Vector3f;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class VortexPortalEntity extends Mob {
-    public VortexPortalEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
+public class RematEffectEntity extends Mob {
+    public RematEffectEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
@@ -61,11 +54,6 @@ public class VortexPortalEntity extends Mob {
     }
 
     @Override
-    public boolean attackable() {
-        return false;
-    }
-
-    @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
         if (pSource != this.damageSources().genericKill()) {
             return false;
@@ -106,6 +94,11 @@ public class VortexPortalEntity extends Mob {
     @Override
     public boolean isPersistenceRequired() {
         return true;
+    }
+
+    @Override
+    public boolean attackable() {
+        return false;
     }
 
     @Override

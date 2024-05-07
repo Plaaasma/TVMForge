@@ -14,6 +14,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.nerdorg.vortexmod.block.ModBlockEntities;
 import net.nerdorg.vortexmod.block.ModBlocks;
 import net.nerdorg.vortexmod.entities.ModEntities;
+import net.nerdorg.vortexmod.entities.client.models.DematEffectModel;
+import net.nerdorg.vortexmod.entities.client.models.RematEffectModel;
+import net.nerdorg.vortexmod.entities.client.renderers.DematEffectRenderer;
+import net.nerdorg.vortexmod.entities.client.renderers.RematEffectRenderer;
 import net.nerdorg.vortexmod.entities.client.renderers.VortexPortalRenderer;
 import net.nerdorg.vortexmod.item.ModItems;
 import net.nerdorg.vortexmod.sound.ModSounds;
@@ -73,6 +77,8 @@ public class VortexMod
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             EntityRenderers.register(ModEntities.VORTEX_PORTAL.get(), VortexPortalRenderer::new);
+            EntityRenderers.register(ModEntities.DEMAT_ENTITY.get(), DematEffectRenderer::new);
+            EntityRenderers.register(ModEntities.REMAT_ENTITY.get(), RematEffectRenderer::new);
             vsClientPipeline = ValkyrienSkiesMod.getVsCoreClient().newPipeline();
         }
     }
